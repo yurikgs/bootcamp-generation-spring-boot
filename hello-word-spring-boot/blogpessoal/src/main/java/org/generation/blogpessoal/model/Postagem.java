@@ -12,12 +12,17 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-//import javax.validation.constraints.NotNull; // Corrigir
-import com.sun.istack.NotNull;
+//import javax.validation.constraints.NotNull;
+//import com.sun.istack.NotNull;  //--> outra possibilidade de 
+
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
        // "ANOTAÇÕES (@) SÃO PARAMETROS QUE COLOCAMOS ACIMA 
        // DAS CLASSES OU PROPRIEDADES E QUE DEFINEM 
@@ -30,16 +35,14 @@ public class Postagem {
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // @GeneratedValue liga o auto incremented
 	private long id;   // sempre long, tipo bigint
 	
-	@NotNull              // o  campo "message" vai aparecer quando houver algum erro, por exemplo, se o usuário tentar enviar o campo vazio (null)
+	@NotBlank              // o  campo "message" vai aparecer quando houver algum erro, por exemplo, se o usuário tentar enviar o campo vazio (null)
 	@Size(min = 5, max = 100, message= "O atributo devve conter no mínimo 5 caracteres")
 	private String titulo;
 
-	@NotNull
+	@NotBlank
 	@Size(min = 10, max = 500, message= "O atributo devve conter no mínimo 10 caracteres")
 	private String texto;
 	
-	
-			//DÚVIDA: Pq o importamos a lib do java útil mas usamos a do sql?
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date = new java.sql.Date(System.currentTimeMillis());
@@ -48,7 +51,19 @@ public class Postagem {
 			// instantaneamente as informações de data e hora,
 			// até os milissegundos.
 
+	@ManyToOne
+	@JsonIgnoreProperties("postagens")
+	private Tema tema;
 	
+	
+	public Tema getTema() {
+		return tema;
+	}
+
+	public void setTema(Tema tema) {
+		this.tema = tema;
+	}
+
 	public long getId() {
 		return id;
 	}
